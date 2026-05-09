@@ -7,6 +7,12 @@ from sklearn.model_selection import TimeSeriesSplit
 from sklearn.metrics import mean_absolute_error
 from tbats import TBATS
 
+import logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 np.random.seed(42)
 plt.rcParams.update({'font.family': 'serif','axes.spines.top': False,'axes.spines.right': False,'axes.linewidth': 0.8})
 
@@ -20,6 +26,27 @@ class Config:
     horizon: int = 12
     n_splits: int = 5
     season: int = 12
+
+def load_config(config_path=None) -> 'Config':
+    """Build Config from config.yaml, falling back to dataclass defaults."""
+    if config_path is None:
+        config_path = Path(__file__).parent / 'config.yaml'
+    if not config_path.exists():
+        return Config()
+    with open(config_path) as _f:
+        import yaml as _yaml
+        raw = _yaml.safe_load(_f) or {}
+    _d = raw.get('data', {})
+    _m = raw.get('model', {})
+    _o = raw.get('output', {})
+    return Config(
+        csv_path=_d.get('input_file', '/Users/k.jones/Downloads/medium-export-e6bf40a8b01915d7380f6f547e0dd25ddd791328d4d9fa3a77513e82e662373c/posts/2001-2025 Net_generation_United_States_all_sectors_monthly.csv'),
+        freq=_d.get('freq', 'MS'),
+        horizon=_m.get('horizon', 12),
+        n_splits=_d.get('n_splits', 5),
+        season=_m.get('season', 12),
+    )
+
 
 
 def load_series(cfg: Config) -> pd.Series:
@@ -54,10 +81,10 @@ def rolling_origin_tbats(s: pd.Series, horizon: int, n_splits: int, season: int)
 
 
 def main():
-    cfg = Config()
+    cfg = load_config()
     s = load_series(cfg)
     mean_mae, y_true, y_pred = rolling_origin_tbats(s, cfg.horizon, cfg.n_splits, cfg.season)
-    print(f"TBATS mean MAE: {mean_mae}")
+    logger.info(f"TBATS mean MAE: {mean_mae}")
 
     plt.figure(figsize=(9,4))
     plt.plot(s.index, s.values, label="history", alpha=0.6)
