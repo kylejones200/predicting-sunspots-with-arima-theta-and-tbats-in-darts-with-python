@@ -1,27 +1,24 @@
+---
+author: "Kyle Jones"
+date_published: "February 3, 2025"
+date_exported_from_medium: "November 10, 2025"
+canonical_link: "https://medium.com/@kyle-t-jones/predicting-sunspots-with-arima-theta-and-tbats-in-darts-with-python-bdbb117ae411"
+---
+
 # Predicting Sunspots with ARIMA, Theta, and TBATS in DARTS with Python Using DARTS to forecast solar cycles
 
-::::### Predicting Sunspots with ARIMA, Theta, and TBATS in DARTS with Python 
+### Predicting Sunspots with ARIMA, Theta, and TBATS in DARTS with Python 
 
 #### Using DARTS to forecast solar cycles
-Sunspot observations are one of science's longest continuous datasets
-and a good case study for time series analysis. Let's explore how modern
-forecasting techniques can help predict future solar activity.
+Sunspot observations are one of science's longest continuous datasets and a good case study for time series analysis. Let's explore how modern forecasting techniques can help predict future solar activity.
 
-The sunspot dataset, maintained by the [WDC-SILSO, Royal Observatory of
-Belgium, Brussels](https://www.sidc.be/SILSO/datafiles), contains monthly observations since
-1749.
+The sunspot dataset, maintained by the [WDC-SILSO, Royal Observatory of Belgium, Brussels](https://www.sidc.be/SILSO/datafiles), contains monthly observations since 1749.
 
 
-<figcaption>This isn an earlier version of the project. I was
-experimenting with smoothing options.</figcaption>
+<figcaption>This isn an earlier version of the project. I was experimenting with smoothing options.</figcaption>
 
 
-In our analysis, we transform this monthly data into yearly averages to
-better observe the Sun's long-term patterns, particularly the roughly
-11-year solar cycle first discovered by Heinrich Schwabe in 1843. This
-dataset has been extensively studied by researchers worldwide, from
-Daines Analytics' SARIMA modeling to Python's Gurus' work with the Darts
-library. Our analysis builds upon this foundation.
+In our analysis, we transform this monthly data into yearly averages to better observe the Sun's long-term patterns, particularly the roughly 11-year solar cycle first discovered by Heinrich Schwabe in 1843. This dataset has been extensively studied by researchers worldwide, from Daines Analytics' SARIMA modeling to Python's Gurus' work with the Darts library. Our analysis builds upon this foundation.
 
 Our analysis implements multiple forecasting models:
 
@@ -157,12 +154,7 @@ if __name__ == "__main__":
 ```
 
 
-This real-world example demonstrates both the power and limitations of
-time series forecasting. While we can capture major patterns, solar
-activity's inherent complexity means predictions should be used as
-guidance rather than absolute forecasts.
-::::Update (2025--11--04) I created another project that isn't about
-sunspots but uses the same ML methods.
+This real-world example demonstrates both the power and limitations of time series forecasting. While we can capture major patterns, solar activity's inherent complexity means predictions should be used as guidance rather than absolute forecasts. Update (2025--11--04) I created another project that isn't about sunspots but uses the same ML methods.
 
 ```python
 import numpy as np
@@ -321,10 +313,3 @@ def main():
 if __name__ == "__main__":
     main()
 ```
-::::::::::::By [Kyle Jones](https://medium.com/@kyle-t-jones) on
-[February 3, 2025](https://medium.com/p/bdbb117ae411).
-
-[Canonical
-link](https://medium.com/@kyle-t-jones/predicting-sunspots-with-arima-theta-and-tbats-in-darts-with-python-bdbb117ae411)
-
-Exported from [Medium](https://medium.com) on November 10, 2025.
