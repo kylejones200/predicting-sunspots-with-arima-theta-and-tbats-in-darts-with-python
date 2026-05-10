@@ -80,18 +80,19 @@ def rolling_origin_tbats(s: pd.Series, horizon: int, n_splits: int, season: int)
     return float(np.mean(maes)), last_true, last_pred
 
 
-def main():
+def main(plot: bool = False):
     cfg = load_config()
     s = load_series(cfg)
     mean_mae, y_true, y_pred = rolling_origin_tbats(s, cfg.horizon, cfg.n_splits, cfg.season)
     logger.info(f"TBATS mean MAE: {mean_mae}")
 
-    plt.figure(figsize=(9,4))
-    plt.plot(s.index, s.values, label="history", alpha=0.6)
-    if y_pred is not None:
-        plt.plot(y_pred.index, y_pred.values, label="TBATS last fold")
-    plt.legend()
-    save_fig("eia_tbats_last_fold.png")
+    if plot:
+        plt.figure(figsize=(9,4))
+        plt.plot(s.index, s.values, label="history", alpha=0.6)
+        if y_pred is not None:
+            plt.plot(y_pred.index, y_pred.values, label="TBATS last fold")
+        plt.legend()
+        save_fig("eia_tbats_last_fold.png")
 
     # Save last fold predictions for integration
     if y_pred is not None:
