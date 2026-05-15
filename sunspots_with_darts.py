@@ -19,12 +19,12 @@ from darts import TimeSeries
 from darts.dataprocessing.transformers import Scaler
 from darts.metrics import mape
 from darts.models import (
+    TBATS,
     ExponentialSmoothing,
     LinearRegressionModel,
     NHiTSModel,
     RandomForest,
     RNNModel,
-    TBATS,
     Theta,
 )
 from darts.utils.utils import ModelMode, SeasonalityMode
