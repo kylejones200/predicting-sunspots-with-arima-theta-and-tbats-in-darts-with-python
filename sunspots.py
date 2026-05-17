@@ -2,7 +2,6 @@
 
 Magics and shell lines are commented out. Run with a normal Python interpreter."""
 
-
 # --- code cell ---
 
 import matplotlib.animation as animation
@@ -149,7 +148,6 @@ plt.legend(bbox_to_anchor=(1.05, 1), loc="upper left")
 plt.grid(True, alpha=0.3)
 plt.tight_layout()
 
-
 def animate(frame):
     current_idx = frame + 1
 
@@ -159,7 +157,6 @@ def animate(frame):
         lines[name].set_data(pred.time_index[:current_idx], pred.values()[:current_idx])
 
     return list(lines.values())
-
 
 # Create animation
 anim = animation.FuncAnimation(
@@ -231,7 +228,6 @@ print("-" * 50)
 for name, result in results.items():
     print(f"{name:<25} {result['mase']:>10.2f}")
 print("-" * 50)
-
 
 # --- code cell ---
 
@@ -322,7 +318,6 @@ for name, model in models.items():
     results[name] = {"prediction": future_pred, "mase": mase_score}
     print(f"{name} MASE: {mase_score:.2f}")
 
-
 # --- code cell ---
 
 # Create a plot showing all predictions together
@@ -370,7 +365,6 @@ plt.savefig(
     dpi=300,
 )  # Higher resolution
 plt.close()
-
 
 # --- code cell ---
 
@@ -517,18 +511,6 @@ plt.legend(bbox_to_anchor=(1.05, 1), loc="upper left")
 plt.grid(True, alpha=0.3)
 plt.tight_layout()
 
-
-def animate(frame):
-    current_idx = frame + 1
-
-    # Update each model's prediction
-    for name in models.keys():
-        pred = results[name]["prediction"]
-        lines[name].set_data(pred.time_index[:current_idx], pred.values()[:current_idx])
-
-    return list(lines.values())
-
-
 # Create animation
 anim = animation.FuncAnimation(
     fig, animate, frames=20, interval=200, blit=True, repeat=True
@@ -599,7 +581,6 @@ print("-" * 50)
 for name, result in results.items():
     print(f"{name:<25} {result['mape']:>10.2f}%")
 print("-" * 50)
-
 
 # --- code cell ---
 
@@ -727,18 +708,6 @@ plt.legend(bbox_to_anchor=(1.05, 1), loc="upper left")
 plt.grid(True, alpha=0.3)
 plt.tight_layout()
 
-
-def animate(frame):
-    current_idx = frame + 1
-
-    # Update each model's prediction
-    for name in models.keys():
-        pred = results[name]["prediction"]
-        lines[name].set_data(pred.time_index[:current_idx], pred.values()[:current_idx])
-
-    return list(lines.values())
-
-
 # Create animation
 anim = animation.FuncAnimation(
     fig,
@@ -776,7 +745,6 @@ plt.tight_layout()
 plt.savefig("sunspots_forecast_all_models.png")
 plt.close()
 
-
 # --- code cell ---
 
 from datetime import datetime, timedelta
@@ -787,8 +755,6 @@ import pandas as pd
 from darts import TimeSeries
 from darts.models import ARIMA
 from darts.utils.timeseries_generation import datetime_attribute_timeseries
-
-
 
 class DataLoader:
     @staticmethod
@@ -859,7 +825,6 @@ class DataLoader:
 
         return series, future_cov
 
-
 def implement_arima(series, future_covariates, forecast_horizon=6):
     """Implement ARIMA model."""
     # Split data for training and testing
@@ -874,7 +839,6 @@ def implement_arima(series, future_covariates, forecast_horizon=6):
     predictions = model.predict(forecast_horizon, future_covariates=future_covariates)
 
     return predictions, model, test
-
 
 def plot_predictions(series, predictions, test=None, save_prefix=""):
     """Plot actual vs predicted values."""
@@ -898,7 +862,6 @@ def plot_predictions(series, predictions, test=None, save_prefix=""):
     plt.savefig(f"{save_prefix}arima_predictions.png")
     plt.close()
 
-
 def evaluate_predictions(test, predictions):
     """Calculate and return evaluation metrics."""
     from darts.metrics import mape, rmse
@@ -907,7 +870,6 @@ def evaluate_predictions(test, predictions):
     rmse_score = rmse(test, predictions)
 
     return {"MAPE": mape_score, "RMSE": rmse_score}
-
 
 def run_analysis(data_type="synthetic", n_points=500):
     """Run the complete analysis pipeline."""
@@ -936,7 +898,6 @@ def run_analysis(data_type="synthetic", n_points=500):
 
     return series, predictions, model
 
-
 if __name__ == "__main__":
     # Run analysis for both synthetic and real data
     print("Running analysis on synthetic data...")
@@ -945,9 +906,7 @@ if __name__ == "__main__":
     print("\nRunning analysis on sunspot data...")
     sunspot_series, sunspot_predictions, sunspot_model = run_analysis("sunspot")
 
-
 # --- code cell ---
-
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -965,75 +924,6 @@ from darts.models import (
 from darts.utils.utils import SeasonalityMode
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
-
-
-class DataLoader:
-    @staticmethod
-    def load_sunspot_data():
-        """Load and prepare sunspot data."""
-        try:
-            df = pd.read_csv(
-                "SN_m_tot_V2.0.csv",
-                delimiter=";",
-                header=None,
-                names=[
-                    "Year",
-                    "Month",
-                    "Decimal_Date",
-                    "Sunspots",
-                    "Std",
-                    "Observations",
-                    "Definitive",
-                ],
-                na_values=["*******"],
-            )
-
-            # Create datetime index
-            df["Date"] = pd.to_datetime(
-                df["Year"].astype(str) + "-" + df["Month"].astype(str) + "-01"
-            )
-
-            # Replace 0 values with 1 to avoid log transform issues
-            df["Sunspots"] = np.where(df["Sunspots"] == 0, 1, df["Sunspots"])
-
-            # Convert to yearly averages
-            df_yearly = df.resample("Y", on="Date")["Sunspots"].mean().reset_index()
-
-            # Ensure enough historical data (at least 50 years)
-            df_yearly = df_yearly.tail(100)  # Take last 100 years
-
-            # Convert to TimeSeries object
-            series = TimeSeries.from_dataframe(df_yearly, "Date", "Sunspots")
-
-            return series
-
-        except FileNotFoundError:
-            print(
-                "Sunspot data file not found. Please ensure SN_m_tot_V2.0.csv exists."
-            )
-            return None
-
-    @staticmethod
-    def generate_synthetic_data(n_points=100):
-        """Generate synthetic time series data."""
-        # Generate dates with consistent frequency
-        dates = pd.date_range(start="1920-01-01", periods=n_points, freq="Y")
-
-        # Generate synthetic values
-        trend = np.linspace(0, 10, n_points)
-        seasonal = 5 * np.sin(2 * np.pi * np.arange(n_points) / 11)  # 11-year cycle
-        noise = np.random.normal(0, 1, n_points)
-        y = trend + seasonal + noise
-
-        # Create DataFrame with consistent date index
-        df = pd.DataFrame({"Date": dates, "Value": y})
-
-        # Convert to TimeSeries object
-        series = TimeSeries.from_dataframe(df, "Date", "Value")
-
-        return series
-
-
 def create_models():
     """Create dictionary of models with adjusted parameters."""
     return {
@@ -1041,7 +931,6 @@ def create_models():
         "Theta": Theta(season_mode=SeasonalityMode.ADDITIVE, seasonality_period=11),
         "TBATS": TBATS(use_trend=True, use_box_cox=False, seasonal_periods=[11]),
     }
-
 
 def calculate_metrics(actual, predicted):
     """Calculate multiple metrics including sMAPE, RMSE, MAE, and R²."""
@@ -1062,7 +951,6 @@ def calculate_metrics(actual, predicted):
     nrmse = rmse / (actual.max() - actual.min())
 
     return {"sMAPE": smape, "RMSE": rmse, "NRMSE": nrmse, "MAE": mae, "R2": r2}
-
 
 def train_and_evaluate(series, forecast_horizon=5):
     """Train models and make predictions."""
@@ -1100,56 +988,6 @@ def train_and_evaluate(series, forecast_horizon=5):
 
     return results, train, test
 
-
-def plot_predictions(series, results, train, test, save_prefix=""):
-    """Plot predictions from all models."""
-    plt.figure(figsize=(15, 7))
-
-    # Plot historical data
-    train.plot(label="Training Data", alpha=0.6)
-    test.plot(label="Test Data", alpha=0.6)
-
-    # Plot predictions for each model
-    colors = plt.cm.rainbow(np.linspace(0, 1, len(results)))
-    for (name, result), color in zip(results.items(), colors):
-        result["prediction"].plot(
-            label=f"{name} (sMAPE: {result['sMAPE']:.1f}%, NRMSE: {result['NRMSE']:.2f})",
-            color=color,
-        )
-
-    plt.title("Time Series Forecasting Comparison")
-    plt.xlabel("Time")
-    plt.ylabel("Value")
-    plt.legend(bbox_to_anchor=(1.05, 1), loc="upper left")
-    plt.grid(True, alpha=0.3)
-    plt.tight_layout()
-
-    plt.savefig(f"{save_prefix}forecasts.png", bbox_inches="tight")
-    plt.close()
-
-
-def run_analysis(data_type="synthetic", n_points=100):
-    """Run the complete analysis pipeline."""
-    # Load data
-    if data_type == "synthetic":
-        series = DataLoader.generate_synthetic_data(n_points)
-    elif data_type == "sunspot":
-        series = DataLoader.load_sunspot_data()
-        if series is None:
-            return None, None, None
-    else:
-        raise ValueError("data_type must be either 'synthetic' or 'sunspot'")
-
-    # Train models and get predictions
-    print(f"\nTraining models for {data_type} data...")
-    results, train, test = train_and_evaluate(series)
-
-    # Plot results
-    plot_predictions(series, results, train, test, save_prefix=f"{data_type}_")
-
-    return series, results, (train, test)
-
-
 if __name__ == "__main__":
     # Run analysis for both synthetic and real data
     print("Running analysis on synthetic data...")
@@ -1158,9 +996,7 @@ if __name__ == "__main__":
     print("\nRunning analysis on sunspot data...")
     sunspot_series, sunspot_results, sunspot_split = run_analysis("sunspot")
 
-
 # --- code cell ---
-
 
 def create_metrics_table(results, data_type):
     """Create a formatted table of metrics for all models."""
@@ -1181,7 +1017,6 @@ def create_metrics_table(results, data_type):
 
     return df
 
-
 # Create tables for both synthetic and sunspot data
 synthetic_table = create_metrics_table(synthetic_results, "Synthetic")
 sunspot_table = create_metrics_table(sunspot_results, "Sunspot")
@@ -1196,14 +1031,11 @@ print(combined_table)
 # Optionally save to CSV
 combined_table.to_csv("model_metrics.csv")
 
-
 # --- code cell ---
 
 # !pip install darts  # Jupyter-only
 
-
 # --- code cell ---
-
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -1212,8 +1044,6 @@ from darts import TimeSeries
 from darts.metrics import mape, rmse
 from darts.models import ARIMA, TBATS, Theta
 from darts.utils.utils import SeasonalityMode
-
-
 
 class TimeSeriesAnalyzer:
     def __init__(self):
@@ -1335,7 +1165,6 @@ class TimeSeriesAnalyzer:
         plt.savefig(save_path, bbox_inches="tight")
         plt.close()
 
-
 def main():
     analyzer = TimeSeriesAnalyzer()
 
@@ -1352,9 +1181,7 @@ def main():
     except FileNotFoundError:
         print("Sunspot data file not found. Please ensure the CSV file exists.")
 
-
 if __name__ == "__main__":
     main()
-
 
 # --- duplicate code cell omitted (identical to earlier cell) ---
