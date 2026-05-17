@@ -779,7 +779,6 @@ plt.close()
 
 # --- code cell ---
 
-import warnings
 from datetime import datetime, timedelta
 
 import matplotlib.pyplot as plt
@@ -789,7 +788,6 @@ from darts import TimeSeries
 from darts.models import ARIMA
 from darts.utils.timeseries_generation import datetime_attribute_timeseries
 
-warnings.filterwarnings("ignore")
 
 
 class DataLoader:
@@ -950,7 +948,6 @@ if __name__ == "__main__":
 
 # --- code cell ---
 
-import warnings
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -968,7 +965,6 @@ from darts.models import (
 from darts.utils.utils import SeasonalityMode
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
-warnings.filterwarnings("ignore")
 
 
 class DataLoader:
@@ -1208,7 +1204,6 @@ combined_table.to_csv("model_metrics.csv")
 
 # --- code cell ---
 
-import warnings
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -1218,7 +1213,6 @@ from darts.metrics import mape, rmse
 from darts.models import ARIMA, TBATS, Theta
 from darts.utils.utils import SeasonalityMode
 
-warnings.filterwarnings("ignore")
 
 
 class TimeSeriesAnalyzer:
