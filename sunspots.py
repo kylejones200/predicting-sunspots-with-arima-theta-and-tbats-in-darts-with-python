@@ -1191,7 +1191,7 @@ synthetic_table = create_metrics_table(synthetic_results, "Synthetic")
 sunspot_table = create_metrics_table(sunspot_results, "Sunspot")
 
 # Combine the tables
-combined_table = pd.concat([synthetic_table, sunspot_table])
+combined_table = synthetic_table.append(sunspot_table)
 
 # Display the table
 print("\nModel Performance Metrics:")
