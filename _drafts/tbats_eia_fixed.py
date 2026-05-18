@@ -90,7 +90,6 @@ def main(plot: bool = False):
         s, cfg.horizon, cfg.n_splits, cfg.season
     )
     logger.info(f"TBATS mean MAE: {mean_mae}")
-
     if plot:
         plt.figure(figsize=(9, 4))
         plt.plot(s.index, s.values, label="history", alpha=0.6)

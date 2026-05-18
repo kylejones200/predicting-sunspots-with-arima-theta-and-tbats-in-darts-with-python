@@ -2,7 +2,6 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 from darts.models import ARIMA, TBATS, Theta
 from darts.utils.utils import SeasonalityMode
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score

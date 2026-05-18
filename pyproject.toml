@@ -3,9 +3,15 @@ name = "predicting-sunspots-with-arima-theta-and-t"
 version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
+    "pydantic>=2.10.0",
+    "pytest>=8.0",
     "darts>=0.44.1",
     "matplotlib>=3.10.9",
     "numpy>=2.4.4",
     "pandas>=3.0.3",
     "scikit-learn>=1.8.0",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

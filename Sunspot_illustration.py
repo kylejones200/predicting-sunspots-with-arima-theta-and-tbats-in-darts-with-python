@@ -41,47 +41,26 @@ def main():
     anim.save("transit_animation.gif", writer="pillow")
 
 
-def main() -> None:
+def main_alt() -> None:
     fig, (ax1, ax2) = plt.subplots(
         2, 1, figsize=(8, 8), gridspec_kw={"height_ratios": [1, 1]}
     )
-
-    transit_depth = 0.98
-
     total_frames = 100
-
-    time_points = np.linspace(-3, 3, total_frames)
-
-    light_curve = []
-
+    np.linspace(-3, 3, total_frames)
     star = plt.Circle((0.5, 0.5), 0.4, color="lightgray", zorder=1)
-
     ax1.add_artist(star)
-
     ax1.set_xlim(0, 1)
-
     ax1.set_ylim(0, 1)
-
     ax1.axis("off")
-
     planet = plt.Circle((-0.2, 0.5), 0.1, color="black", zorder=2)
-
     ax1.add_artist(planet)
-
     (line,) = ax2.plot([], [], "k-", linewidth=1)
-
     (points,) = ax2.plot([], [], "k.", markersize=10)
-
     ax2.set_xlabel("Time - T$_c$ (hours)")
-
     ax2.set_xlim(-3, 3)
-
     ax2.set_ylim(0.97, 1.01)
-
     ax2.grid(True, alpha=0.3)
-
-    x_data, y_data = ([], [])
-
+    _x_data, _y_data = ([], [])
     main()
 
 

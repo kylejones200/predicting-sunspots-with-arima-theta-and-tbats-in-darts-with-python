@@ -327,27 +327,17 @@ def main() -> None:
         ],
         na_values=["*******"],
     )
-
     df["Date"] = pd.to_datetime(
         df["Year"].astype(str) + "-" + df["Month"].astype(str) + "-01"
     )
-
     df.set_index("Date", inplace=True)
-
     df["Sunspots"] = np.where(df["Sunspots"] == 0, 1, df["Sunspots"])
-
     df_yearly = df.resample("YE")["Sunspots"].mean().reset_index()
-
     df_yearly.columns = ["Year", "Sunspots"]
-
     series = TimeSeries.from_dataframe(df_yearly, "Year", "Sunspots")
-
     train, val = series.split_before(pd.Timestamp("19800101"))
-
     print("training set: ", len(train))
-
     print("validation set: ", len(val))
-
     models = {
         "Exponential Smoothing": ExponentialSmoothing(
             trend="add",
@@ -384,9 +374,7 @@ def main() -> None:
             num_layers=2,
         ),
     }
-
     results = {}
-
     for name, model in models.items():
         print(f"\nTraining {name}...")
         model.fit(train)
@@ -397,17 +385,11 @@ def main() -> None:
         print(f"{name} MASE: {mase_score:.2f}")
 
     fig = plt.figure(figsize=(15, 7))
-
     ax = plt.axes()
-
     start_date = pd.Timestamp("19450101")
-
     end_date = results[list(models.keys())[0]]["prediction"].time_index[-1]
-
     historical_df = series.pd_dataframe()
-
     historical_df = historical_df[historical_df.index >= start_date]
-
     ax.plot(
         historical_df.index,
         historical_df.values,
@@ -415,15 +397,10 @@ def main() -> None:
         color="black",
         alpha=0.6,
     )
-
     ax.set_xlim(start_date, end_date)
-
     ax.set_ylim(0, series.values().max() * 1.1)
-
     colors = plt.cm.rainbow(np.linspace(0, 1, len(models)))
-
     lines = {}
-
     for name, color in zip(models.keys(), colors):
         (line,) = ax.plot(
             [],
@@ -435,33 +412,22 @@ def main() -> None:
         lines[name] = line
 
     plt.title("Yearly Sunspots Forecast - 20 Years into Future", pad=20)
-
     plt.xlabel("Time")
-
     plt.ylabel("Sunspots")
-
     plt.legend(bbox_to_anchor=(1.05, 1), loc="upper left")
-
     plt.grid(True, alpha=0.3)
-
     plt.tight_layout()
-
     anim = animation.FuncAnimation(
         fig, animate, frames=20, interval=200, blit=True, repeat=True
     )
-
     anim.save("sunspots_forecast.gif", writer="pillow", fps=5, dpi=100)
-
     plt.close()
-
     print("\nFinal predicted values (20 years into future):")
-
     for name, result in results.items():
         final_value = result["prediction"].values()[-1][0]
         print(f"{name}: {final_value:.2f} (MASE: {result['mase']:.2f})")
 
     plt.figure(figsize=(15, 7))
-
     plt.plot(
         historical_df.index,
         historical_df.values,
@@ -469,7 +435,6 @@ def main() -> None:
         color="black",
         alpha=0.6,
     )
-
     for name, color in zip(models.keys(), colors):
         pred = results[name]["prediction"]
         plt.plot(
@@ -480,7 +445,6 @@ def main() -> None:
         )
 
     plt.xlim(start_date, end_date)
-
     plt.ylim(
         0,
         max(
@@ -489,36 +453,22 @@ def main() -> None:
         )
         * 1.1,
     )
-
     plt.title("Sunspots Forecast - All Models")
-
     plt.xlabel("Time")
-
     plt.ylabel("Sunspots")
-
     plt.legend(bbox_to_anchor=(1.05, 1), loc="upper left")
-
     plt.grid(True, alpha=0.3)
-
     plt.tight_layout()
-
     plt.savefig("sunspots_forecast_all_models.png", bbox_inches="tight", dpi=300)
-
     plt.close()
-
     print("\nModel Comparison:")
-
     print("-" * 50)
-
     print(f"{'Model':<25} {'MASE':>10}")
-
     print("-" * 50)
-
     for name, result in results.items():
         print(f"{name:<25} {result['mase']:>10.2f}")
 
     print("-" * 50)
-
     df = pd.read_csv(
         "SN_m_tot_V2.0.csv",
         delimiter=";",
@@ -534,23 +484,15 @@ def main() -> None:
         ],
         na_values=["*******"],
     )
-
     df["Date"] = pd.to_datetime(
         df["Year"].astype(str) + "-" + df["Month"].astype(str) + "-01"
     )
-
     df.set_index("Date", inplace=True)
-
     df["Sunspots"] = np.where(df["Sunspots"] == 0, 1, df["Sunspots"])
-
     series = TimeSeries.from_dataframe(df, "Date", "Sunspots")
-
     train, val = series.split_before(pd.Timestamp("19800101"))
-
     print("training set: ", len(train))
-
     print("validation set: ", len(val))
-
     models = {
         "Exponential Smoothing": ExponentialSmoothing(
             trend="multiplicative",
@@ -587,9 +529,7 @@ def main() -> None:
             num_layers=2,
         ),
     }
-
     results = {}
-
     for name, model in models.items():
         print(f"\nTraining {name}...")
         model.fit(train)
@@ -600,7 +540,6 @@ def main() -> None:
         print(f"{name} MASE: {mase_score:.2f}")
 
     plt.figure(figsize=(15, 7))
-
     plt.plot(
         historical_df.index,
         historical_df.values,
@@ -608,13 +547,11 @@ def main() -> None:
         color="black",
         alpha=0.6,
     )
-
     for name, color in zip(models.keys(), colors):
         pred = results[name]["prediction"]
         plt.plot(pred.time_index, pred.values(), label=name, color=color)
 
     plt.xlim(start_date, end_date)
-
     plt.ylim(
         0,
         max(
@@ -623,23 +560,14 @@ def main() -> None:
         )
         * 1.1,
     )
-
     plt.title("Sunspots Forecast - All Models")
-
     plt.xlabel("Time")
-
     plt.ylabel("Sunspots")
-
     plt.legend(bbox_to_anchor=(1.05, 1), loc="upper left")
-
     plt.grid(True, alpha=0.3)
-
     plt.tight_layout()
-
     plt.savefig("sunspots_forecast_all_models.png", bbox_inches="tight", dpi=300)
-
     plt.close()
-
     df = pd.read_csv(
         "SN_m_tot_V2.0.csv",
         delimiter=";",
@@ -655,27 +583,17 @@ def main() -> None:
         ],
         na_values=["*******"],
     )
-
     df["Date"] = pd.to_datetime(
         df["Year"].astype(str) + "-" + df["Month"].astype(str) + "-01"
     )
-
     df.set_index("Date", inplace=True)
-
     df["Sunspots"] = np.where(df["Sunspots"] == 0, 1, df["Sunspots"])
-
     df_yearly = df.resample("Y")["Sunspots"].mean().reset_index()
-
     df_yearly.columns = ["Year", "Sunspots"]
-
     series = TimeSeries.from_dataframe(df_yearly, "Year", "Sunspots")
-
     train, val = series.split_before(pd.Timestamp("19800101"))
-
     print("training set: ", len(train))
-
     print("validation set: ", len(val))
-
     models = {
         "Exponential Smoothing": ExponentialSmoothing(
             trend=ModelMode.MULTIPLICATIVE,
@@ -711,9 +629,7 @@ def main() -> None:
             num_layers=2,
         ),
     }
-
     results = {}
-
     for name, model in models.items():
         print(f"\nTraining {name}...")
         model.fit(train)
@@ -724,17 +640,11 @@ def main() -> None:
         print(f"{name} MAPE: {mape_score:.2f}%")
 
     fig = plt.figure(figsize=(15, 7))
-
     ax = plt.axes()
-
     start_date = pd.Timestamp("19450101")
-
     end_date = results[list(models.keys())[0]]["prediction"].time_index[-1]
-
     historical_df = series.pd_dataframe()
-
     historical_df = historical_df[historical_df.index >= start_date]
-
     ax.plot(
         historical_df.index,
         historical_df.values,
@@ -742,15 +652,10 @@ def main() -> None:
         color="black",
         alpha=0.6,
     )
-
     ax.set_xlim(start_date, end_date)
-
     ax.set_ylim(0, series.values().max() * 1.1)
-
     colors = plt.cm.rainbow(np.linspace(0, 1, len(models)))
-
     lines = {}
-
     for name, color in zip(models.keys(), colors):
         (line,) = ax.plot(
             [],
@@ -762,33 +667,22 @@ def main() -> None:
         lines[name] = line
 
     plt.title("Yearly Sunspots Forecast - 20 Years into Future", pad=20)
-
     plt.xlabel("Time")
-
     plt.ylabel("Sunspots")
-
     plt.legend(bbox_to_anchor=(1.05, 1), loc="upper left")
-
     plt.grid(True, alpha=0.3)
-
     plt.tight_layout()
-
     anim = animation.FuncAnimation(
         fig, animate, frames=20, interval=200, blit=True, repeat=True
     )
-
     anim.save("sunspots_forecast.gif", writer="pillow", fps=5, dpi=100)
-
     plt.close()
-
     print("\nFinal predicted values (20 years into future):")
-
     for name, result in results.items():
         final_value = result["prediction"].values()[-1][0]
         print(f"{name}: {final_value:.2f} (MAPE: {result['mape']:.2f}%)")
 
     plt.figure(figsize=(15, 7))
-
     plt.plot(
         historical_df.index,
         historical_df.values,
@@ -796,7 +690,6 @@ def main() -> None:
         color="black",
         alpha=0.6,
     )
-
     for name, color in zip(models.keys(), colors):
         pred = results[name]["prediction"]
         plt.plot(
@@ -807,7 +700,6 @@ def main() -> None:
         )
 
     plt.xlim(start_date, end_date)
-
     plt.ylim(
         0,
         max(
@@ -816,36 +708,22 @@ def main() -> None:
         )
         * 1.1,
     )
-
     plt.title("Sunspots Forecast - All Models")
-
     plt.xlabel("Time")
-
     plt.ylabel("Sunspots")
-
     plt.legend(bbox_to_anchor=(1.05, 1), loc="upper left")
-
     plt.grid(True, alpha=0.3)
-
     plt.tight_layout()
-
     plt.savefig("sunspots_forecast_all_models.png", bbox_inches="tight", dpi=300)
-
     plt.close()
-
     print("\nModel Comparison:")
-
     print("-" * 50)
-
     print(f"{'Model':<25} {'MAPE':>10}")
-
     print("-" * 50)
-
     for name, result in results.items():
         print(f"{name:<25} {result['mape']:>10.2f}%")
 
     print("-" * 50)
-
     df = pd.read_csv(
         "SN_m_tot_V2.0.csv",
         delimiter=";",
@@ -861,27 +739,17 @@ def main() -> None:
         ],
         na_values=["*******"],
     )
-
     df["Date"] = pd.to_datetime(
         df["Year"].astype(str) + "-" + df["Month"].astype(str) + "-01"
     )
-
     df.set_index("Date", inplace=True)
-
     df["Sunspots"] = np.where(df["Sunspots"] == 0, 1, df["Sunspots"])
-
     df_yearly = df.resample("YE")["Sunspots"].mean().reset_index()
-
     df_yearly.columns = ["Year", "Sunspots"]
-
     series = TimeSeries.from_dataframe(df_yearly, "Year", "Sunspots")
-
     train, val = series.split_before(pd.Timestamp("19800101"))
-
     print("training set: ", len(train))
-
     print("validation set: ", len(val))
-
     models = {
         "Exponential Smoothing": ExponentialSmoothing(
             trend=ModelMode.ADDITIVE,
@@ -906,9 +774,7 @@ def main() -> None:
         ),
         "NHiTS": NHiTSModel(input_chunk_length=10, output_chunk_length=20, n_epochs=80),
     }
-
     results = {}
-
     for name, model in models.items():
         print(f"\nTraining {name}...")
         model.fit(train)
@@ -916,17 +782,11 @@ def main() -> None:
         results[name] = {"prediction": pred}
 
     fig = plt.figure(figsize=(15, 7))
-
     ax = plt.axes()
-
     start_date = pd.Timestamp("19450101")
-
     end_date = results[list(models.keys())[0]]["prediction"].time_index[-1]
-
     historical_df = series.pd_dataframe()
-
     historical_df = historical_df[historical_df.index >= start_date]
-
     ax.plot(
         historical_df.index,
         historical_df.values,
@@ -934,97 +794,58 @@ def main() -> None:
         color="black",
         alpha=0.6,
     )
-
     ax.set_xlim(start_date, end_date)
-
     ax.set_ylim(0, series.values().max() * 1.1)
-
     colors = plt.cm.rainbow(np.linspace(0, 1, len(models)))
-
     lines = {}
-
     for name, color in zip(models.keys(), colors):
         (line,) = ax.plot([], [], label=f"{name}", lw=2, color=color)
         lines[name] = line
 
     plt.title("Yearly Sunspots Forecast - 20 Years into Future", pad=20)
-
     plt.xlabel("Time")
-
     plt.ylabel("Sunspots")
-
     plt.legend(bbox_to_anchor=(1.05, 1), loc="upper left")
-
     plt.grid(True, alpha=0.3)
-
     plt.tight_layout()
-
     anim = animation.FuncAnimation(
         fig, animate, frames=20, interval=200, blit=True, repeat=True
     )
-
     anim.save("sunspots_forecast.gif", writer="pillow", fps=5, dpi=100)
-
     plt.close()
-
     print("\nFinal predicted values (20 years into future):")
-
     for name, result in results.items():
         final_value = result["prediction"].values()[-1][0]
         print(f"{name}: {final_value:.2f}")
 
     plt.figure(figsize=(15, 7))
-
     historical_df.plot(label="Historical", color="black", alpha=0.6)
-
     for name, color in zip(models.keys(), colors):
         pred = results[name]["prediction"]
         pred.plot(label=name, color=color)
 
     plt.title("Sunspots Forecast - All Models")
-
     plt.xlabel("Time")
-
     plt.ylabel("Sunspots")
-
     plt.legend(bbox_to_anchor=(1.05, 1), loc="upper left")
-
     plt.grid(True, alpha=0.3)
-
     plt.tight_layout()
-
     plt.savefig("sunspots_forecast_all_models.png")
-
     plt.close()
-
     print("Running analysis on synthetic data...")
-
     synthetic_series, synthetic_predictions, synthetic_model = run_analysis("synthetic")
-
     print("\nRunning analysis on sunspot data...")
-
     sunspot_series, sunspot_predictions, sunspot_model = run_analysis("sunspot")
-
     print("Running analysis on synthetic data...")
-
     synthetic_series, synthetic_results, synthetic_split = run_analysis("synthetic")
-
     print("\nRunning analysis on sunspot data...")
-
     sunspot_series, sunspot_results, sunspot_split = run_analysis("sunspot")
-
     synthetic_table = create_metrics_table(synthetic_results, "Synthetic")
-
     sunspot_table = create_metrics_table(sunspot_results, "Sunspot")
-
     combined_table = synthetic_table.append(sunspot_table)
-
     print("\nModel Performance Metrics:")
-
     print(combined_table)
-
     combined_table.to_csv("model_metrics.csv")
-
     main()
 
 

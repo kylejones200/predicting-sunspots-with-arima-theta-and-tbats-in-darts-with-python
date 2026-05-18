@@ -92,13 +92,10 @@ def run_monthly_validation(out_dir: Path) -> None:
     train, val = series.split_before(pd.Timestamp("19800101"))
     print("training set:", len(train))
     print("validation set:", len(val))
-
     transformer = Scaler()
     train_transformed = transformer.fit_transform(train)
-
     models = build_monthly_models()
     results: dict = {}
-
     for name, model in models.items():
         print(f"\nTraining {name}...")
         if name == "RNN":
@@ -117,7 +114,6 @@ def run_monthly_validation(out_dir: Path) -> None:
     ax.set_xlim(series.time_index.min(), series.time_index.max())
     ax.set_ylim(0, float(series.values().max()) * 1.1)
     series.plot(label="Actual", ax=ax, color="black", alpha=0.6)
-
     colors = plt.cm.rainbow(np.linspace(0, 1, len(models)))
     lines: dict = {}
     for name, color in zip(models.keys(), colors):
@@ -153,7 +149,6 @@ def run_monthly_validation(out_dir: Path) -> None:
     )
     anim.save(out_dir / "model_predictions.gif", writer="pillow", fps=1, dpi=100)
     plt.close(fig)
-
     print("\nFinal MAPE scores (validation):")
     for name, result in results.items():
         print(f"  {name}: {result['mape']}%")
@@ -212,7 +207,6 @@ def run_yearly_future_forecast(out_dir: Path, horizon: int = 20) -> None:
     train, val = series.split_before(pd.Timestamp("19800101"))
     print("\n(yearly) training set:", len(train))
     print("(yearly) validation set:", len(val))
-
     models = build_yearly_models()
     results: dict = {}
     for name, model in models.items():
@@ -223,7 +217,6 @@ def run_yearly_future_forecast(out_dir: Path, horizon: int = 20) -> None:
 
     first_pred = results[next(iter(models))]["prediction"]
     end_date = first_pred.time_index[-1]
-
     fig = plt.figure(figsize=(15, 7))
     ax = plt.axes()
     start_date = pd.Timestamp("19450101")
@@ -238,7 +231,6 @@ def run_yearly_future_forecast(out_dir: Path, horizon: int = 20) -> None:
     )
     ax.set_xlim(start_date, end_date)
     ax.set_ylim(0, float(series.values().max()) * 1.1)
-
     colors = plt.cm.rainbow(np.linspace(0, 1, len(models)))
     lines: dict = {}
     for name, color in zip(models.keys(), colors):
@@ -272,7 +264,6 @@ def run_yearly_future_forecast(out_dir: Path, horizon: int = 20) -> None:
     )
     anim.save(out_dir / "sunspots_forecast.gif", writer="pillow", fps=5, dpi=100)
     plt.close(fig)
-
     print(f"\nFinal predicted values ({horizon} yearly steps):")
     for name, result in results.items():
         final_value = float(result["prediction"].values()[-1][0])
