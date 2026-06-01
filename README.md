@@ -11,14 +11,7 @@ The sunspot dataset, maintained by the [WDC-SILSO, Royal Observatory of Belgium,
 
 <figcaption>This isn an earlier version of the project. I was experimenting with smoothing options.</figcaption>
 
-## About
 
-Place the code for this article in this repository.
-The original article export is saved as `article.md`.
-
-## Files
-
-Add your `.ipynb`, `.py`, `.yaml`, `.js`, `.ts`, or other project files here.
 
 ## Disclaimer
 

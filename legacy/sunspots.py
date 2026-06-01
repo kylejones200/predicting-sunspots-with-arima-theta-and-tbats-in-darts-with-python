@@ -111,8 +111,7 @@ class TimeSeriesAnalyzer:
         """Load either real data from CSV or generate synthetic data"""
         if synthetic:
             return self._generate_synthetic_data(n_points)
-        else:
-            return self._load_csv_data(filepath)
+        return self._load_csv_data(filepath)
 
     def analyze(self, series, train_test_split=0.8):
         """Train models and evaluate predictions"""
